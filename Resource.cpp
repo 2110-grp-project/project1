@@ -1,3 +1,8 @@
+
+// resource management moudule 
+// responsible for handling loading, displaying, searching,, and sorting of campus resources 
+
+
 #include "Resource.h"
 #include <iostream>
 #include <sstream>
