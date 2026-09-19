@@ -37,6 +37,51 @@ bool comparebystatus(Resource a, Resource b){
 	return tolower(a.status)<tolower(b.status);
 }
 
+void merge(vector<Resource>& Res, int left, int mid, int right, bool(*cmp)(Resource, Resource)){
+	vector<Resource> leftHalf(Res.begin()+ left, Res.begin()+mid+1);
+	vector<Resource> rightHalf(Res.begin()+ mid+1, Res.begin()+right+1);
+
+	int i=0;
+	int j=0;
+	int k=left;
+
+	while (i<leftHalf.size() && j<rightHalf.size()){
+		if (cmp(leftHalf[i], rightHalf[j])){
+			Res[k]=leftHalf[i];
+			i++;
+		}
+		else{
+			Res[k]=rightHalf[j];
+			j++;
+		}
+		k++;
+	}
+	
+	while(i< leftHalf.size()){
+		Res[k]=leftHalf[i];
+		i++;
+		k++;
+	}
+
+	while(j<rightHalf.size()){
+		Res[k]=rightHalf[j];
+		j++;
+		k++;
+	}
+}
+
+void mergesort(vector<Resource>& Res, int left, int right, bool(*cmp)(Resource, Resource)){
+	if (left>=right){
+		return;
+	}
+
+	int mid=left+(right -left)/2;
+
+	mergesort(Res, left, mid,cmp);
+	mergesort(Res, mid+1, right, cmp);
+	merge(Res, left, mid, right, cmp);
+}
+
 
 int main(){
 
@@ -44,6 +89,7 @@ int main(){
 
 	if (!inFile){
 		cout<<"no file found"<<endl;
+		return 0;
 	}
 
 	string line;
@@ -57,7 +103,26 @@ int main(){
 		getline(ss,name,'|');
 		getline(ss,type,'|');
 		getline(ss,status,'|');
+		
+		if (id.empty()){
+			cout<<"The id is invalid.So,skipping this entry."<<endl;
+			continue;
+		}
 
+		bool isduplicate=false;
+		for (Resource existing: Res){
+			if (existing.id==id){
+				cout<<"Duplicate id"<<id<<"found. Skipping this entry."<<endl;
+				isduplicate=true;
+				break;
+			}
+		}
+
+		if (isduplicate){
+			continue;
+		}
+
+			
 		Resource r;
 
 		r.id=id;
@@ -80,20 +145,20 @@ int main(){
 	cin.ignore();
 
 	if (sortchoice == 1){
-		sort(Res.begin(), Res.end(), comparebyid);
+		mergesort(Res, 0, Res.size()-1, comparebyid);
 	}
 	else if (sortchoice==2){
-		sort(Res.begin(), Res.end(), comparebyname);
+		mergesort(Res, 0, Res.size()-1, comparebyname);
 	}
 	else if (sortchoice==3){
-		sort(Res.begin(), Res.end(), comparebytype);
+		mergesort(Res,0,Res.size()-1, comparebytype);
 	}
 	else if (sortchoice==4){
-		sort(Res.begin(), Res.end(), comparebystatus);
+		mergesort(Res, 0, Res.size()-1, comparebystatus);
 	}
 	else{
-		cout<<"choice is inavlid. by default, it is sorted by name. "<<endl;
-		sort(Res.begin(), Res.end(), comparebyname);
+		cout<<"choice is inavlid. by default; it is sorted by name. "<<endl;
+		mergesort(Res,0, Res.size()-1, comparebyname);
 	}
 
 
