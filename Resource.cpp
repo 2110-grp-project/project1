@@ -83,7 +83,7 @@ void mergesort(vector<Resource>& Res, int left, int right, bool(*cmp)(Resource, 
 }
 
 
-vector<Resource>loadresource(string filename){
+vector<Resource>loadresources(string filename){
 	vector<Resource>Res;
 	ifstream inFile("Resource.txt");
 	if (!inFile){
