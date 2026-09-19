@@ -83,18 +83,15 @@ void mergesort(vector<Resource>& Res, int left, int right, bool(*cmp)(Resource, 
 }
 
 
-int main(){
-
+vector<Resource>loadresource(string filename){
+	vector<Resource>Res;
 	ifstream inFile("Resource.txt");
-
 	if (!inFile){
 		cout<<"no file found"<<endl;
-		return 0;
+		return Res;
 	}
 
 	string line;
-	vector <Resource> Res;
-
 	while(getline(inFile, line)){
 		stringstream ss(line);
 		string id,name,type,status;
@@ -132,14 +129,26 @@ int main(){
 		Res.push_back(r);
 
 	}
+return Res;
+}
+
+void displayresources(const vector<Resource>& Res){
 
 	cout<<"file has "<<Res.size()<<" stored information"<<endl;
 	for (Resource r:Res){
 		cout<<"id: "<<r.id<<" | name: "<<r.name<<" | type: "<<r.type<<" | status: "<<r.status<<endl;
 
 	}
+}
 
-	cout<<"\nsort by : 1) id 2) name 3) type  4)status "<<endl;
+void sortresources(vector<Resource>&Res){
+
+	if(Res.empty()){
+		cout<<"no resources to sort"<<endl;
+		return;
+	}
+
+	cout<<"\nsort by : 1) id 2) name 3) type 4) status "<<endl;
 	int sortchoice;
 	cin>>sortchoice;
 	cin.ignore();
@@ -166,7 +175,9 @@ int main(){
 	for (Resource r: Res){
 		cout<<"id: "<<r.id<<" |name: "<<r.name<<" |type: "<<r.type<<" |status: "<<r.status<<endl;
 	}
+}
 
+void searchresources(const vector<Resource>& Res){
 	string searchterm;
 	cout<<"\nenter a name or type to search for : ";
 	getline(cin,searchterm);
@@ -180,7 +191,5 @@ int main(){
 			cout<<"id: "<<r.id<<" |name: "<<r.name<<" |type: "<<r.type<<" |status: "<<r.status<<endl;
 		}
 	}
-
-
-return 0;
 }
+
