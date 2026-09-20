@@ -275,3 +275,26 @@ void ReservationList::displayReservations() const
 
     cout << endl;
 }
+
+// clear
+
+ReservationList::~ReservationList()
+{
+    clear();
+}
+
+void ReservationList::clear()
+{
+    ReservationNode *current = head;
+
+    while (current != nullptr)
+    {
+        ReservationNode *temp = current;
+        current = current->next;
+        delete temp;
+    }
+
+    head = nullptr;
+    tail = nullptr;
+}
+
