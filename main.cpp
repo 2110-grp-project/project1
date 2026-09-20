@@ -1,5 +1,4 @@
 // this is main.cpp file 
-```cpp
 // entry point for campus reservation system
 
 #include "Resource.h"
@@ -9,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -157,7 +157,4 @@ int main(){
 
     return 0;
 }
-```
 
-	return 0;
-}
