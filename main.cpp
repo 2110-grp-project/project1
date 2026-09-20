@@ -14,15 +14,14 @@ using namespace std;
 
 int main(){
 
-    vector<Resource> Res= loadresources("Resource.txt");
+    vector<Resource> Res = loadresources("data/resources.txt");
     displayresources(Res);
     ReservationList reservations;
 
     WaitingList waitingList;
     CancellationHistory cancellationHistory;
 
-    ifstream inputFile("reservations.txt");
-
+    ifstream inputFile("data/reservations.txt");
     if (!inputFile)
     {
         cout << "Could not open file." << endl;
