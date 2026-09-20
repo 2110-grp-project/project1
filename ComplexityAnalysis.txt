@@ -1,0 +1,42 @@
+1. reservation insertion complexity
+
+data structure- linked list with a tail pointer 
+complexity- O(n)
+The code always keeps track of where the last element is pointed at,
+so it is easy to add any new reservation at the end. However,
+it goes through the whole list twice because 1) it has to make sure
+there is no other reservation with the same id and 2) the same resource is not booked
+on the same day. So, even though the inserting part is fast, the checking part
+makes it slower because it has to look at every existing reservation first,
+which is why it is O(n) overall. 
+
+2.reservation removal complexity 
+data structure-linked list
+complexity-O(n)
+To remove or cancel any reservation, the code starts at the beginning of the list
+and keeps on checking until it finds the match. If the required reservation is the
+initial one, then it's quick, but if it is not, then the code keeps on going node to node
+using current = current->next. Because this is a singly linked list, each node only has
+a pointer to the next one, so if the reservation is towards the tail, then it has to
+go through the whole list.
+
+3.waiting list processing complexity 
+data structure- queue 
+complexity-O(1)
+The waiting list uses a queue, so to add and remove a student it uses push() and pop()
+respectively. Neither adding nor removing has to search or shift anything, since the queue
+always keeps track of both the front and back. That is why waiting-list processing time is O(1).
+However, to display it, it's different: complexity is O(n), because a queue doesn't allow
+looking through it without removing things, so the code has to go through one student at a
+time, copy it, and then display it. So, if there are n students in line, it has to go through
+each one to print the list.
+
+4.undo cancellation complexity
+data structure-stack 
+complexity-O(1)
+It uses a stack, so to add a cancellation, the code uses push() in addCancellation(),
+and it is placed on top. Since it is on top, to undo a cancellation means calling top()
+to grab the most recently added one and pop() to remove it in undoCancellation().
+A stack only works with whatever is on top, so it doesn't matter how tall the stack is —
+it works the same every time. That's why this is O(1).
+

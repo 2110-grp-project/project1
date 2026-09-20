@@ -3,7 +3,7 @@
 // responsible for handling loading, displaying, searching,, and sorting of campus resources 
 
 
-#include "Resource.h"
+#include "../include/Resource.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -83,9 +83,9 @@ void mergesort(vector<Resource>& Res, int left, int right, bool(*cmp)(Resource, 
 }
 
 
-vector<Resource>loadresource(string filename){
+vector<Resource>loadresources(string filename){
 	vector<Resource>Res;
-	ifstream inFile("Resource.txt");
+	ifstream inFile(filename);
 	if (!inFile){
 		cout<<"no file found"<<endl;
 		return Res;
