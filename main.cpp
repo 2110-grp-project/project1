@@ -1,8 +1,11 @@
 // this is main.cpp file 
-// entry point for campus reservation system 
+```cpp
+// entry point for campus reservation system
 
 #include "Resource.h"
 #include "Reservation.h"
+#include "WaitingList.h"
+#include "CancellationHistory.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -11,92 +14,150 @@ using namespace std;
 
 int main(){
 
-	vector<Resource> Res= loadresources("Resource.txt");
-	displayresources(Res);
-	ReservationList reservations;
+    vector<Resource> Res= loadresources("Resource.txt");
+    displayresources(Res);
+    ReservationList reservations;
 
-	ifstream inputFile("reservations.txt");
+    WaitingList waitingList;
+    CancellationHistory cancellationHistory;
 
-	if (!inputFile)
-	{
-		cout << "Could not open file." << endl;
-		return 1;
-	}
+    ifstream inputFile("reservations.txt");
 
-	string line;
+    if (!inputFile)
+    {
+        cout << "Could not open file." << endl;
+        return 1;
+    }
 
-	while (getline(inputFile, line))
-	{
-		stringstream ss(line);
+    string line;
 
-		string reservationID;
-		string studentID;
-		string studentName;
-		string resourceID;
-		string reservationDate;
+    while (getline(inputFile, line))
+    {
+        stringstream ss(line);
 
-		getline(ss, reservationID, '|');
-		getline(ss, studentID, '|');
-		getline(ss, studentName, '|');
-		getline(ss, resourceID, '|');
-		getline(ss, reservationDate, '|');
+        string reservationID;
+        string studentID;
+        string studentName;
+        string resourceID;
+        string reservationDate;
 
-		Reservation reservation(
-				reservationID,
-				studentID,
-				studentName,
-				resourceID,
-				reservationDate);
+        getline(ss, reservationID, '|');
+        getline(ss, studentID, '|');
+        getline(ss, studentName, '|');
+        getline(ss, resourceID, '|');
+        getline(ss, reservationDate, '|');
 
-		reservations.insertReservation(reservation);
-	}
+        Reservation reservation(
+                reservationID,
+                studentID,
+                studentName,
+                resourceID,
+                reservationDate);
 
-	inputFile.close();
+        reservations.insertReservation(reservation);
+    }
 
-	int choice;
+    inputFile.close();
 
-	do{
+    int choice;
 
-		cout<<"\nCampus Resource Reservation System"<<endl;
-		cout<<"1. View Resources"<<endl;
-		cout<<"2.Search Resources"<<endl;
-		cout<<"3.Sort Resources"<<endl;
-		cout << "4. View Reservations" << endl;
-		cout << "5. Cancel Reservation" << endl;
-		cout << "9. Exit" << endl;
+    do{
 
-		cin>>choice;
-		cin.ignore();
+        cout<<"\nCampus Resource Reservation System"<<endl;
+        cout<<"1. View Resources"<<endl;
+        cout<<"2. Search Resources"<<endl;
+        cout<<"3. Sort Resources"<<endl;
+        cout<<"4. View Reservations"<<endl;
+        cout<<"5. Cancel Reservation"<<endl;
+        cout<<"6. Add Student to Waiting List"<<endl;
+        cout<<"7. Remove Student from Waiting List"<<endl;
+        cout<<"8. View Waiting List"<<endl;
+        cout<<"9. Undo Cancellation"<<endl;
+        cout<<"10. View Cancellation History"<<endl;
+        cout<<"11. Exit"<<endl;
 
-		if (choice==1){
-			displayresources(Res);
-		}
-		
-		else if (choice==2){
-			searchresources(Res);
-		}
+        cin>>choice;
+        cin.ignore();
 
-		else if(choice==3){
-			sortresources(Res);
-		}
+        if (choice==1){
+            displayresources(Res);
+        }
 
-		else if (choice == 4)
-		{
-			reservations.displayReservations();
-		}
+        else if (choice==2){
+            searchresources(Res);
+        }
 
-		else if (choice == 5)
-		{
-			string reservationID;
+        else if(choice==3){
+            sortresources(Res);
+        }
 
-			cout << "Enter reservation ID for cancellation: ";
-			cin >> reservationID;
+        else if (choice == 4)
+        {
+            reservations.displayReservations();
+        }
 
-			reservations.removeReservation(reservationID);
-		}
-		
-	} while (choice !=9);
+        else if (choice == 5)
+        {
+            string reservationID;
 
+            cout << "Enter reservation ID for cancellation: ";
+            cin >> reservationID;
+
+            reservations.removeReservation(reservationID);
+        }
+
+        else if (choice == 6)
+        {
+            int studentID;
+            string resourceID;
+
+            cout << "Enter student ID: ";
+            cin >> studentID;
+
+            cout << "Enter resource ID: ";
+            cin >> resourceID;
+
+            waitingList.addStudent(studentID, resourceID);
+
+            cout << "Student added to waiting list." << endl;
+        }
+
+        else if (choice == 7)
+        {
+            waitingList.removeStudent();
+        }
+
+        else if (choice == 8)
+        {
+            waitingList.displayWaitingList();
+        }
+
+        else if (choice == 9)
+        {
+            if (!cancellationHistory.isEmpty())
+            {
+                CancelledReservation reservation =
+                    cancellationHistory.undoCancellation();
+
+                cout << "Reservation " << reservation.reservationID
+                     << " was restored." << endl;
+            }
+            else
+            {
+                cout << "Cancellation history is empty." << endl;
+            }
+        }
+
+        else if (choice == 10)
+        {
+            cancellationHistory.displayHistory();
+        }
+
+    } while (choice != 11);
+
+    return 0;
+}
+```
 
 	return 0;
 }
