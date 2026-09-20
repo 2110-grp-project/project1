@@ -13,11 +13,15 @@ peoject-1 is a c++ program that is made to help students view, search, sort, res
 - Waiting list support for fully booked resources
 - Undo the most recently cancelled reservation
 
-##Files
+## Files
 main.cpp
 Resources.h
 Reservation.h
+WaitingList.h
+CancellationHistory.H
 Reservation.cpp
+WaitingList.cpp
+CancellationHistory.cpp
 Resource.cpp
 Reservation.txt
 Resource.txt
