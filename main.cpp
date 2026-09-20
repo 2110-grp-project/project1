@@ -15,7 +15,7 @@ int main(){
 	displayresources(Res);
 	ReservationList reservations;
 
-	ifstream inputFile("data/reservations.txt");
+	ifstream inputFile("reservations.txt");
 
 	if (!inputFile)
 	{
