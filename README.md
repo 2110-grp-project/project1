@@ -15,16 +15,17 @@ peoject-1 is a c++ program that is made to help students view, search, sort, res
 
 ## Files
 main.cpp
-Resources.h
+Resource.h
 Reservation.h
 WaitingList.h
-CancellationHistory.H
+CancellationHistory.h
 Reservation.cpp
 WaitingList.cpp
 CancellationHistory.cpp
 Resource.cpp
-Reservation.txt
-Resource.txt
+reservations.txt
+resources.txt
+
 ## team members 
 
 1. nansu baniya(username= nansubaniya22-sudo)
