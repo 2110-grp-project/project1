@@ -15,6 +15,7 @@ private:
     queue<WaitingStudent> waitingQueue;
 
 public:
+    queue<WaitingStudent> getQueue() const { return waitingQueue; }
     void addStudent(int studentID, string resourceID);
     void removeStudent();
     void displayWaitingList();
