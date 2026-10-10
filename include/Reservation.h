@@ -26,6 +26,7 @@ public:
     string getResourceID() const;
     string getReservationDate() const;
 
+    
     void display() const;
 };
 class ReservationNode
@@ -58,6 +59,12 @@ public:
 
     // clear linked list
     void clear();
+
+    void sortReservationsByDate();
+    ReservationNode* mergeSort(ReservationNode* node);
+    ReservationNode* merge(ReservationNode* left, ReservationNode* right);
+    void splitList(ReservationNode* source, ReservationNode** front, ReservationNode** back);
+
 };
 
 #endif

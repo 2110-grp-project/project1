@@ -1,5 +1,6 @@
 #include "../include/Reservation.h"
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
 
@@ -298,3 +299,103 @@ void ReservationList::clear()
     tail = nullptr;
 }
 
+// merge sort
+
+void ReservationList::splitList(
+    ReservationNode* source,
+    ReservationNode** front,
+    ReservationNode** back)
+{
+    ReservationNode* slow = source;
+    ReservationNode* fast = source->next;
+
+    while (fast != nullptr)
+    {
+        fast = fast->next;
+
+        if (fast != nullptr)
+        {
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+
+    *front = source;
+    *back = slow->next;
+    slow->next = nullptr;
+}
+
+// merging lists
+ReservationNode* ReservationList::merge(
+    ReservationNode* left,
+    ReservationNode* right)
+{
+    if (left == nullptr)
+        return right;
+
+    if (right == nullptr)
+        return left;
+
+    int leftMonth, leftDay, leftYear;
+    int rightMonth, rightDay, rightYear;
+
+    string leftDate = left->data.getReservationDate();
+    string rightDate = right->data.getReservationDate();
+
+    if (sscanf(leftDate.c_str(), "%d/%d/%d", &leftMonth, &leftDay, &leftYear) != 3 ||
+        sscanf(rightDate.c_str(), "%d/%d/%d", &rightMonth, &rightDay, &rightYear) != 3)
+    {
+        return left;
+    }
+
+    bool leftComesFirst =
+        (leftYear < rightYear) ||
+        (leftYear == rightYear && leftMonth < rightMonth) ||
+        (leftYear == rightYear && leftMonth == rightMonth &&
+         leftDay <= rightDay);
+
+    if (leftComesFirst)
+    {
+        left->next = merge(left->next, right);
+        return left;
+    }
+    else
+    {
+        right->next = merge(left, right->next);
+        return right;
+    }
+}
+
+
+ReservationNode* ReservationList::mergeSort(ReservationNode* node)
+{
+    if (node == nullptr || node->next == nullptr)
+        return node;
+
+    ReservationNode* front;
+    ReservationNode* back;
+
+    splitList(node, &front, &back);
+
+    front = mergeSort(front);
+    back = mergeSort(back);
+
+    return merge(front, back);
+}
+
+
+void ReservationList::sortReservationsByDate()
+{
+    if (head == nullptr || head->next == nullptr)
+    {
+        cout << "Not enough reservations to sort.\n";
+        return;
+    }
+
+    head = mergeSort(head);
+    tail = head;
+    while (tail->next != nullptr)
+        tail = tail->next;
+
+    cout << "Reservations sorted by date.\n";
+}

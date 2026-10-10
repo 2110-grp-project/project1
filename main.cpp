@@ -8,7 +8,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
 #include <vector>
+
 
 using namespace std;
 
@@ -73,7 +75,9 @@ int main(){
         cout<<"8. View Waiting List"<<endl;
         cout<<"9. Undo Cancellation"<<endl;
         cout<<"10. View Cancellation History"<<endl;
-        cout<<"11. Exit"<<endl;
+        cout<< "11. Insert Reservation"<< endl;
+        cout << "12. Sort Reservations by Date" << endl;
+        cout<<"13. Exit"<<endl;
 
         cin>>choice;
         cin.ignore();
@@ -152,7 +156,42 @@ int main(){
             cancellationHistory.displayHistory();
         }
 
-    } while (choice != 11);
+        else if (choice == 11)
+        {
+            string reservationID, studentID, studentName, resourceID, reservationDate;
+
+            cout << "Enter reservation ID: ";
+            cin >> reservationID;
+
+            cout << "Enter Student ID: ";
+            cin >> studentID;
+
+            cin.ignore();
+            cout << "Enter Student name: ";
+            getline(cin, studentName);
+
+            cout << "Enter Resource ID: ";
+            cin >> resourceID;
+
+            cout << "Enter Reservation date: ";
+            cin >> reservationDate;
+
+            Reservation reservation(reservationID, studentID, studentName,
+                                    resourceID, reservationDate);
+
+            // if not added successfully
+            if (!reservations.insertReservation(reservation))
+                cout << "Reservation could not be added." << endl;
+
+        }
+
+        else if (choice == 12)
+        {
+            reservations.sortReservationsByDate();
+            reservations.displayReservations();
+        }
+
+    } while (choice != 13);
 
     return 0;
 }
