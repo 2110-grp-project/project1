@@ -5,6 +5,7 @@
 #include "Reservation.h"
 #include "WaitingList.h"
 #include "CancellationHistory.h"
+#include "Reports.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -77,7 +78,8 @@ int main(){
         cout<<"10. View Cancellation History"<<endl;
         cout<< "11. Insert Reservation"<< endl;
         cout << "12. Sort Reservations by Date" << endl;
-        cout<<"13. Exit"<<endl;
+        cout<<"13. Reports"<<endl;
+        cout<<"14. Exit"<<endl;
 
         cin>>choice;
         cin.ignore();
@@ -191,7 +193,12 @@ int main(){
             reservations.displayReservations();
         }
 
-    } while (choice != 13);
+        else if (choice == 13)
+        {
+            reportsMenu(Res, reservations, waitingList);
+        }
+
+    } while (choice != 14);
 
     return 0;
 }

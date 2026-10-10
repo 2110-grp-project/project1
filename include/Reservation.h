@@ -45,6 +45,7 @@ private:
     ReservationNode *tail;
 
 public:
+    const ReservationNode* getHead() const { return head; }
     ReservationList();
     ~ReservationList();
 
