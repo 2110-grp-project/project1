@@ -1,4 +1,5 @@
-// this is main.cpp file 
+```cpp
+// this is main.cpp file
 // entry point for campus reservation system
 
 #include "Resource.h"
@@ -6,25 +7,26 @@
 #include "WaitingList.h"
 #include "CancellationHistory.h"
 #include "Reports.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdio>
 #include <vector>
 
-
 using namespace std;
 
-int main(){
-
+int main()
+{
     vector<Resource> Res = loadresources("data/resources.txt");
     displayresources(Res);
-    ReservationList reservations;
 
+    ReservationList reservations;
     WaitingList waitingList;
     CancellationHistory cancellationHistory;
 
     ifstream inputFile("data/reservations.txt");
+
     if (!inputFile)
     {
         cout << "Could not open file." << endl;
@@ -50,11 +52,12 @@ int main(){
         getline(ss, reservationDate, '|');
 
         Reservation reservation(
-                reservationID,
-                studentID,
-                studentName,
-                resourceID,
-                reservationDate);
+            reservationID,
+            studentID,
+            studentName,
+            resourceID,
+            reservationDate
+        );
 
         reservations.insertReservation(reservation);
     }
@@ -63,44 +66,45 @@ int main(){
 
     int choice;
 
-    do{
+    do
+    {
+        cout << "\nCampus Resource Reservation System" << endl;
+        cout << "1. View Resources" << endl;
+        cout << "2. Search Resources" << endl;
+        cout << "3. Sort Resources" << endl;
+        cout << "4. View Reservations" << endl;
+        cout << "5. Cancel Reservation" << endl;
+        cout << "6. Add Student to Waiting List" << endl;
+        cout << "7. Remove Student from Waiting List" << endl;
+        cout << "8. View Waiting List" << endl;
+        cout << "9. Undo Cancellation" << endl;
+        cout << "10. View Cancellation History" << endl;
+        cout << "11. Insert Reservation" << endl;
+        cout << "12. Sort Reservations by Date" << endl;
+        cout << "13. Search Reservations" << endl;
+        cout << "14. Reports" << endl;
+        cout << "15. Exit" << endl;
 
-        cout<<"\nCampus Resource Reservation System"<<endl;
-        cout<<"1. View Resources"<<endl;
-        cout<<"2. Search Resources"<<endl;
-        cout<<"3. Sort Resources"<<endl;
-        cout<<"4. View Reservations"<<endl;
-        cout<<"5. Cancel Reservation"<<endl;
-        cout<<"6. Add Student to Waiting List"<<endl;
-        cout<<"7. Remove Student from Waiting List"<<endl;
-        cout<<"8. View Waiting List"<<endl;
-        cout<<"9. Undo Cancellation"<<endl;
-        cout<<"10. View Cancellation History"<<endl;
-        cout<<"11. Insert Reservation"<< endl;
-        cout<<"12. Sort Reservations by Date" << endl;
-        cout<<"13. Reports"<<endl;
-	cout<<"14. Exit"<<endl;
-
-        cin>>choice;
+        cout << "Enter your choice: ";
+        cin >> choice;
         cin.ignore();
 
-        if (choice==1){
+        if (choice == 1)
+        {
             displayresources(Res);
         }
-
-        else if (choice==2){
+        else if (choice == 2)
+        {
             searchresources(Res);
         }
-
-        else if(choice==3){
+        else if (choice == 3)
+        {
             sortresources(Res);
         }
-
         else if (choice == 4)
         {
             reservations.displayReservations();
         }
-
         else if (choice == 5)
         {
             string reservationID;
@@ -110,7 +114,6 @@ int main(){
 
             reservations.removeReservation(reservationID);
         }
-
         else if (choice == 6)
         {
             int studentID;
@@ -126,17 +129,14 @@ int main(){
 
             cout << "Student added to waiting list." << endl;
         }
-
         else if (choice == 7)
         {
             waitingList.removeStudent();
         }
-
         else if (choice == 8)
         {
             waitingList.displayWaitingList();
         }
-
         else if (choice == 9)
         {
             if (!cancellationHistory.isEmpty())
@@ -144,7 +144,8 @@ int main(){
                 CancelledReservation reservation =
                     cancellationHistory.undoCancellation();
 
-                cout << "Reservation " << reservation.reservationID
+                cout << "Reservation "
+                     << reservation.reservationID
                      << " was restored." << endl;
             }
             else
@@ -152,15 +153,17 @@ int main(){
                 cout << "Cancellation history is empty." << endl;
             }
         }
-
         else if (choice == 10)
         {
             cancellationHistory.displayHistory();
         }
-
         else if (choice == 11)
         {
-            string reservationID, studentID, studentName, resourceID, reservationDate;
+            string reservationID;
+            string studentID;
+            string studentName;
+            string resourceID;
+            string reservationDate;
 
             cout << "Enter reservation ID: ";
             cin >> reservationID;
@@ -169,6 +172,7 @@ int main(){
             cin >> studentID;
 
             cin.ignore();
+
             cout << "Enter Student name: ";
             getline(cin, studentName);
 
@@ -178,31 +182,66 @@ int main(){
             cout << "Enter Reservation date: ";
             cin >> reservationDate;
 
-            Reservation reservation(reservationID, studentID, studentName,
-                                    resourceID, reservationDate);
+            Reservation reservation(
+                reservationID,
+                studentID,
+                studentName,
+                resourceID,
+                reservationDate
+            );
 
-            // if not added successfully
             if (!reservations.insertReservation(reservation))
+            {
                 cout << "Reservation could not be added." << endl;
-
+            }
         }
-
         else if (choice == 12)
         {
             reservations.sortReservationsByDate();
             reservations.displayReservations();
         }
+        else if (choice == 13)
+        {
+            int searchChoice;
+            string searchID;
 
-	else if(choice==13){
-		menu(Res, reservations, waitingList);
-	}
+            cout << "\nSearch Reservations" << endl;
+            cout << "1. Search by Reservation ID" << endl;
+            cout << "2. Search by Student ID" << endl;
+            cout << "Enter your choice: ";
+            cin >> searchChoice;
 
-	else if (choice!=14){
-		cout<<"Invalid option. please choose a number from 1-14.\n";
-	}
+            if (searchChoice == 1)
+            {
+                cout << "Enter reservation ID: ";
+                cin >> searchID;
 
-    } while (choice != 14);
+                reservations.searchByReservationID(searchID);
+            }
+            else if (searchChoice == 2)
+            {
+                cout << "Enter student ID: ";
+                cin >> searchID;
+
+                reservations.searchByStudentID(searchID);
+            }
+            else
+            {
+                cout << "Invalid search option." << endl;
+            }
+        }
+        else if (choice == 14)
+        {
+            menu(Res, reservations, waitingList);
+        }
+        else if (choice != 15)
+        {
+            cout << "Invalid option. Please choose a number from 1-15."
+                 << endl;
+        }
+
+    } while (choice != 15);
 
     return 0;
 }
-
+```
