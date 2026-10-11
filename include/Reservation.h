@@ -65,6 +65,9 @@ public:
     ReservationNode* merge(ReservationNode* left, ReservationNode* right);
     void splitList(ReservationNode* source, ReservationNode** front, ReservationNode** back);
 
+void searchByReservationID(const string& reservationID) const;
+void searchByStudentID(const string& studentID) const;
+
 };
 
 #endif
