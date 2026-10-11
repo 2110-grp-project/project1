@@ -399,3 +399,37 @@ void ReservationList::sortReservationsByDate()
 
     cout << "Reservations sorted by date.\n";
 }
+
+void ReservationList::searchByReservationID(const string& reservationID) const{
+	ReservationNode *current= head;
+	while (current!=nullptr){
+		if( current->data.getReservationID()==reservationID){
+			cout<<"\n Reservation found: \n";
+			current->data.display();
+			return;
+		}
+		current=current->next;
+	}
+
+	cout<<"There is no reservation with this ID"<< reservationID<<endl;
+}
+
+void ReservationList::searchByStudentID(const string& studentID) const{
+	ReservationNode* current=head;
+	bool found=false;
+	while (current!= nullptr){
+		if(current->data.getStudentID()==studentID){
+			current->data.display();
+			cout<<endl;
+			found=true;
+		}
+		current=current->next;
+	}
+	if (!found){
+		cout<<"there is no reservation for student"<<studentID<<endl;
+	}
+}
+
+
+
+
