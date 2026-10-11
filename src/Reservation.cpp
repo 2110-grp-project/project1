@@ -1,421 +1,253 @@
-
-#include "../include/Reservation.h"
+```cpp
+#include "Reports.h"
 #include <iostream>
-#include <cstdio>
+#include <iomanip>
+#include <queue>
+#include <limits>
+#include <sstream>
+
 using namespace std;
 
-Reservation::Reservation()
-    : reservationID(""),
-      studentID(""),
-      studentName(""),
-      resourceID(""),
-      reservationDate("")
+static int reservationcount(const ReservationList& list, const string& resourceID)
 {
-}
+    stringstream buffer;
+    streambuf* old = cout.rdbuf(buffer.rdbuf());
 
-Reservation::Reservation(string reservationID,
-                         string studentID,
-                         string studentName,
-                         string resourceID,
-                         string reservationDate)
-    : reservationID(reservationID),
-      studentID(studentID),
-      studentName(studentName),
-      resourceID(resourceID),
-      reservationDate(reservationDate)
-{
-}
+    list.displayReservations();
 
-ReservationNode::ReservationNode(const Reservation &reservation)
-    : data(reservation), next(nullptr)
-{
-}
+    cout.rdbuf(old);
 
-ReservationList::ReservationList()
-    : head(nullptr), tail(nullptr)
-{
-}
+    int count = 0;
+    string line;
+    string tag = "Resource ID: ";
 
-// Get reservation ID
-string Reservation::getReservationID() const
-{
-    return reservationID;
-}
-
-// Get student ID
-string Reservation::getStudentID() const
-{
-    return studentID;
-}
-
-// Get student name
-string Reservation::getStudentName() const
-{
-    return studentName;
-}
-
-// Get resource ID
-string Reservation::getResourceID() const
-{
-    return resourceID;
-}
-
-// Get reservation date
-string Reservation::getReservationDate() const
-{
-    return reservationDate;
-}
-
-// Display reservation information
-void Reservation::display() const
-{
-    cout << "Reservation ID: " << reservationID << endl;
-    cout << "Student ID: " << studentID << endl;
-    cout << "Student Name: " << studentName << endl;
-    cout << "Resource ID: " << resourceID << endl;
-    cout << "Date: " << reservationDate << endl;
-}
-
-// Validate reservations
-bool ReservationList::validateReservation(
-    const Reservation &reservation) const
-{
-    if (reservation.getReservationID().empty())
+    while (getline(buffer, line))
     {
-        cout << "Reservation ID cannot be empty.\n";
-        return false;
-    }
-
-    if (reservation.getStudentID().empty())
-    {
-        cout << "Student ID cannot be empty.\n";
-        return false;
-    }
-
-    if (reservation.getStudentName().empty())
-    {
-        cout << "Student name cannot be empty.\n";
-        return false;
-    }
-
-    if (reservation.getResourceID().empty())
-    {
-        cout << "Resource ID cannot be empty.\n";
-        return false;
-    }
-
-    if (reservation.getReservationDate().empty())
-    {
-        cout << "Reservation date cannot be empty.\n";
-        return false;
-    }
-
-    ReservationNode *current = head;
-
-    while (current != nullptr)
-    {
-        if (current->data.getReservationID() ==
-            reservation.getReservationID())
+        if (line.compare(0, tag.size(), tag) == 0)
         {
-            cout << "Reservation ID already exists.\n";
-            return false;
-        }
-
-        current = current->next;
-    }
-
-    current = head;
-
-    while (current != nullptr)
-    {
-        if (current->data.getResourceID() ==
-                reservation.getResourceID() &&
-            current->data.getReservationDate() ==
-                reservation.getReservationDate())
-        {
-            cout << "Resource "
-                 << reservation.getResourceID()
-                 << " is already reserved on "
-                 << reservation.getReservationDate()
-                 << ".\n";
-
-            return false;
-        }
-
-        current = current->next;
-    }
-
-    return true;
-}
-
-// Insert reservation
-bool ReservationList::insertReservation(
-    const Reservation &reservation)
-{
-    if (!validateReservation(reservation))
-    {
-        return false;
-    }
-
-    ReservationNode *newNode = new ReservationNode(reservation);
-
-    if (head == nullptr)
-    {
-        head = newNode;
-        tail = newNode;
-    }
-    else
-    {
-        tail->next = newNode;
-        tail = newNode;
-    }
-
-    cout << "Reservation created successfully.\n";
-    return true;
-}
-
-// Remove or cancel reservation
-bool ReservationList::removeReservation(
-    const string &reservationID)
-{
-    if (head == nullptr)
-    {
-        cout << "No active reservations.\n";
-        return false;
-    }
-
-    if (head->data.getReservationID() == reservationID)
-    {
-        ReservationNode *temp = head;
-        head = head->next;
-
-        if (head == nullptr)
-        {
-            tail = nullptr;
-        }
-
-        delete temp;
-        cout << "Reservation cancelled successfully.\n";
-        return true;
-    }
-
-    ReservationNode *current = head;
-
-    while (current->next != nullptr)
-    {
-        if (current->next->data.getReservationID() == reservationID)
-        {
-            ReservationNode *temp = current->next;
-            current->next = temp->next;
-
-            if (temp == tail)
+            if (resourceID == "" || line.substr(tag.size()) == resourceID)
             {
-                tail = current;
+                count++;
             }
-
-            delete temp;
-            cout << "Reservation cancelled successfully.\n";
-            return true;
         }
-
-        current = current->next;
     }
 
-    cout << "Reservation not found.\n";
-    return false;
+    return count;
 }
 
-// Display reservations
-void ReservationList::displayReservations() const
+static int waitingcount(const WaitingList& waiting, const string& resourceID)
 {
-    if (head == nullptr)
+    stringstream buffer;
+    streambuf* old = cout.rdbuf(buffer.rdbuf());
+
+    const_cast<WaitingList&>(waiting).displayWaitingList();
+
+    cout.rdbuf(old);
+
+    int count = 0;
+    string line;
+    string tag = "resource id: ";
+
+    while (getline(buffer, line))
     {
-        cout << "\nNo active reservations.\n";
+        size_t pos = line.find(tag);
+
+        if (pos != string::npos)
+        {
+            if (resourceID == "" || line.substr(pos + tag.size()) == resourceID)
+            {
+                count++;
+            }
+        }
+    }
+
+    return count;
+}
+
+void activereservation(const ReservationList& list)
+{
+    cout << "\n--- Reports of active reservations ---\n";
+
+    int total = reservationcount(list, "");
+
+    if (total == 0)
+    {
+        cout << "There are no active reservations at the moment.\n";
         return;
     }
 
-    cout << "\nReservations:\n";
-
-    ReservationNode *current = head;
-
-    while (current != nullptr)
-    {
-        current->data.display();
-        current = current->next;
-    }
-
-    cout << endl;
+    cout << "Total active reservations: " << total << "\n\n";
+    list.displayReservations();
 }
 
-// Destructor
-ReservationList::~ReservationList()
+void utilization(const vector<Resource>& resources, const ReservationList& list)
 {
-    clear();
-}
+    cout << "\n--- Report of resource utilization ---\n";
 
-// Clear linked list
-void ReservationList::clear()
-{
-    ReservationNode *current = head;
-
-    while (current != nullptr)
+    if (resources.empty())
     {
-        ReservationNode *temp = current;
-        current = current->next;
-        delete temp;
-    }
-
-    head = nullptr;
-    tail = nullptr;
-}
-
-// Split list for merge sort
-void ReservationList::splitList(
-    ReservationNode *source,
-    ReservationNode **front,
-    ReservationNode **back)
-{
-    ReservationNode *slow = source;
-    ReservationNode *fast = source->next;
-
-    while (fast != nullptr)
-    {
-        fast = fast->next;
-
-        if (fast != nullptr)
-        {
-            slow = slow->next;
-            fast = fast->next;
-        }
-    }
-
-    *front = source;
-    *back = slow->next;
-    slow->next = nullptr;
-}
-
-// Merge two sorted lists by reservation date
-ReservationNode *ReservationList::merge(
-    ReservationNode *left,
-    ReservationNode *right)
-{
-    if (left == nullptr)
-        return right;
-
-    if (right == nullptr)
-        return left;
-
-    int leftMonth, leftDay, leftYear;
-    int rightMonth, rightDay, rightYear;
-
-    string leftDate = left->data.getReservationDate();
-    string rightDate = right->data.getReservationDate();
-
-    if (sscanf(leftDate.c_str(), "%d/%d/%d",
-               &leftMonth, &leftDay, &leftYear) != 3 ||
-        sscanf(rightDate.c_str(), "%d/%d/%d",
-               &rightMonth, &rightDay, &rightYear) != 3)
-    {
-        return left;
-    }
-
-    bool leftComesFirst =
-        (leftYear < rightYear) ||
-        (leftYear == rightYear && leftMonth < rightMonth) ||
-        (leftYear == rightYear && leftMonth == rightMonth &&
-         leftDay <= rightDay);
-
-    if (leftComesFirst)
-    {
-        left->next = merge(left->next, right);
-        return left;
-    }
-    else
-    {
-        right->next = merge(left, right->next);
-        return right;
-    }
-}
-
-// Merge sort
-ReservationNode *ReservationList::mergeSort(ReservationNode *node)
-{
-    if (node == nullptr || node->next == nullptr)
-        return node;
-
-    ReservationNode *front;
-    ReservationNode *back;
-
-    splitList(node, &front, &back);
-
-    front = mergeSort(front);
-    back = mergeSort(back);
-
-    return merge(front, back);
-}
-
-// Sort reservations by date
-void ReservationList::sortReservationsByDate()
-{
-    if (head == nullptr || head->next == nullptr)
-    {
-        cout << "Not enough reservations to sort.\n";
+        cout << "There are no resources.\n";
         return;
     }
 
-    head = mergeSort(head);
-    tail = head;
+    cout << left << setw(10) << "ID"
+         << setw(25) << "Name"
+         << setw(12) << "Status"
+         << "Reservations\n";
 
-    while (tail->next != nullptr)
+    for (const Resource& r : resources)
     {
-        tail = tail->next;
+        cout << left << setw(10) << r.id
+             << setw(25) << r.name
+             << setw(12) << r.status
+             << reservationcount(list, r.id) << "\n";
     }
-
-    cout << "Reservations sorted by date.\n";
 }
 
-// Search by reservation ID
-void ReservationList::searchByReservationID(
-    const string &reservationID) const
+void waitingliststats(const vector<Resource>& resources, const WaitingList& waiting)
 {
-    ReservationNode *current = head;
+    cout << "\n--- Waiting list for each resource ---\n";
 
-    while (current != nullptr)
+    if (resources.empty())
     {
-        if (current->data.getReservationID() == reservationID)
+        cout << "No resources to display.\n";
+        return;
+    }
+
+    cout << left << setw(10) << "ID"
+         << setw(25) << "Name"
+         << "Students waiting\n";
+
+    for (const Resource& r : resources)
+    {
+        cout << left << setw(10) << r.id
+             << setw(25) << r.name
+             << waitingcount(waiting, r.id) << "\n";
+    }
+
+    cout << "Total students waiting: "
+         << waitingcount(waiting, "") << "\n";
+}
+
+struct ResourceDemand
+{
+    string id;
+    string name;
+    int reservations;
+    int waiting;
+    int total;
+};
+
+void mostrequested(
+    const vector<Resource>& resources,
+    const ReservationList& list,
+    const WaitingList& waiting)
+{
+    cout << "\n--- Most requested resources ---\n";
+
+    if (resources.empty())
+    {
+        cout << "No resources to display.\n";
+        return;
+    }
+
+    vector<ResourceDemand> demand;
+
+    for (const Resource& r : resources)
+    {
+        ResourceDemand d;
+
+        d.id = r.id;
+        d.name = r.name;
+        d.reservations = reservationcount(list, r.id);
+        d.waiting = waitingcount(waiting, r.id);
+        d.total = d.reservations + d.waiting;
+
+        demand.push_back(d);
+    }
+
+    for (size_t i = 1; i < demand.size(); i++)
+    {
+        ResourceDemand key = demand[i];
+        int j = static_cast<int>(i) - 1;
+
+        while (j >= 0 && demand[j].total < key.total)
         {
-            cout << "\nReservation found:\n";
-            current->data.display();
-            return;
+            demand[j + 1] = demand[j];
+            j--;
         }
 
-        current = current->next;
+        demand[j + 1] = key;
     }
 
-    cout << "Reservation not found.\n";
+    cout << left << setw(6) << "Rank"
+         << setw(10) << "ID"
+         << setw(25) << "Name"
+         << setw(14) << "Reservations"
+         << setw(10) << "Waiting"
+         << "Total\n";
+
+    for (size_t i = 0; i < demand.size(); i++)
+    {
+        cout << left << setw(6) << (i + 1)
+             << setw(10) << demand[i].id
+             << setw(25) << demand[i].name
+             << setw(14) << demand[i].reservations
+             << setw(10) << demand[i].waiting
+             << demand[i].total << "\n";
+    }
 }
 
-// Search by student ID
-void ReservationList::searchByStudentID(
-    const string &studentID) const
+void menu(
+    const vector<Resource>& resources,
+    const ReservationList& list,
+    const WaitingList& waiting)
 {
-    ReservationNode *current = head;
-    bool found = false;
-
-    while (current != nullptr)
+    while (true)
     {
-        if (current->data.getStudentID() == studentID)
+        cout << "\nReports\n"
+             << "1. Active reservations\n"
+             << "2. Resource utilization\n"
+             << "3. Most requested resources\n"
+             << "4. Waiting list statistics\n"
+             << "0. Back to main menu\n"
+             << "Choose an option: ";
+
+        int choice;
+
+        if (!(cin >> choice))
         {
-            cout << "\nReservation found:\n";
-            current->data.display();
-            found = true;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
         }
 
-        current = current->next;
-    }
+        switch (choice)
+        {
+            case 1:
+                activereservation(list);
+                break;
 
-    if (!found)
-    {
-        cout << "No reservations found for this student.\n";
+            case 2:
+                utilization(resources, list);
+                break;
+
+            case 3:
+                mostrequested(resources, list, waiting);
+                break;
+
+            case 4:
+                waitingliststats(resources, waiting);
+                break;
+
+            case 0:
+                return;
+
+            default:
+                cout << "Invalid option. Please enter a number from 0 to 4.\n";
+        }
     }
 }
+```
