@@ -1,54 +1,53 @@
-#include "../include/WaitingList.h"
+```cpp
+#include "Reports.h"
 #include <iostream>
+#include <iomanip>
+#include <queue>
+#include <limits>
+#include <sstream>
+
 using namespace std;
 
-void WaitingList::addStudent(int studentID, string resourceID) {
-    WaitingStudent student;
+static int reservationcount(const ReservationList& list, const string& resourceID)
+{
+    stringstream buffer;
+    streambuf* old = cout.rdbuf(buffer.rdbuf());
 
-    student.studentID = studentID;
-    student.resourceID = resourceID;
+    list.displayReservations();
 
-    waitingQueue.push(student);
+    cout.rdbuf(old);
 
-    cout << "Student " << studentID
-         << " added to the waiting list for resource "
-         << resourceID << "." << endl;
-}
+    int count = 0;
+    string line;
+    string tag = "Resource ID: ";
 
-void WaitingList::removeStudent() {
-    if (waitingQueue.empty()) {
-        cout << "The waiting list is empty." << endl;
-        return;
+    while (getline(buffer, line))
+    {
+        if (line.compare(0, tag.size(), tag) == 0)
+        {
+            if (resourceID == "" || line.substr(tag.size()) == resourceID)
+            {
+                count++;
+            }
+        }
     }
 
-    WaitingStudent student = waitingQueue.front();
-
-    cout << "Student " << student.studentID
-         << " removed from the waiting list for resource "
-         << student.resourceID << "." << endl;
-
-    waitingQueue.pop();
+    return count;
 }
 
-void WaitingList::displayWaitingList() {
-    if (waitingQueue.empty()) {
-        cout << "The waiting list is empty." << endl;
-        return;
-    }
+static int waitingcount(const WaitingList& waiting, const string& resourceID)
+{
+    stringstream buffer;
+    streambuf* old = cout.rdbuf(buffer.rdbuf());
 
-    queue<WaitingStudent> temp = waitingQueue;
+    const_cast<WaitingList&>(waiting).displayWaitingList();
 
-    cout << "Waiting List:" << endl;
+    cout.rdbuf(old);
 
-    while (!temp.empty()) {
-        cout << "Student ID: " << temp.front().studentID
-             << " | Resource ID: " << temp.front().resourceID
-             << endl;
+    int count = 0;
+    string line;
+    string tag = "Resource ID: ";
 
-        temp.pop();
-    }
-}
-
-bool WaitingList::isEmpty() {
-    return waitingQueue.empty();
-}
+    while (getline(buffer, line))
+    {
+        size_t pos =
