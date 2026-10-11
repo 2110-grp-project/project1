@@ -1,8 +1,8 @@
+
 #include "../include/Reservation.h"
 #include <iostream>
 #include <cstdio>
 using namespace std;
-
 
 Reservation::Reservation()
     : reservationID(""),
@@ -12,7 +12,6 @@ Reservation::Reservation()
       reservationDate("")
 {
 }
-
 
 Reservation::Reservation(string reservationID,
                          string studentID,
@@ -26,8 +25,8 @@ Reservation::Reservation(string reservationID,
       reservationDate(reservationDate)
 {
 }
-ReservationNode::ReservationNode(
-    const Reservation &reservation)
+
+ReservationNode::ReservationNode(const Reservation &reservation)
     : data(reservation), next(nullptr)
 {
 }
@@ -37,37 +36,37 @@ ReservationList::ReservationList()
 {
 }
 
-//get rservation id
+// Get reservation ID
 string Reservation::getReservationID() const
 {
     return reservationID;
 }
 
-//get student id
+// Get student ID
 string Reservation::getStudentID() const
 {
     return studentID;
 }
 
-//get student names
+// Get student name
 string Reservation::getStudentName() const
 {
     return studentName;
 }
 
-//get resource id
+// Get resource ID
 string Reservation::getResourceID() const
 {
     return resourceID;
 }
 
-//get reservation date
+// Get reservation date
 string Reservation::getReservationDate() const
 {
     return reservationDate;
 }
 
-//display information from reservation
+// Display reservation information
 void Reservation::display() const
 {
     cout << "Reservation ID: " << reservationID << endl;
@@ -77,11 +76,10 @@ void Reservation::display() const
     cout << "Date: " << reservationDate << endl;
 }
 
-// validating reservations
+// Validate reservations
 bool ReservationList::validateReservation(
     const Reservation &reservation) const
 {
-
     if (reservation.getReservationID().empty())
     {
         cout << "Reservation ID cannot be empty.\n";
@@ -116,11 +114,9 @@ bool ReservationList::validateReservation(
 
     while (current != nullptr)
     {
-
         if (current->data.getReservationID() ==
             reservation.getReservationID())
         {
-
             cout << "Reservation ID already exists.\n";
             return false;
         }
@@ -132,14 +128,12 @@ bool ReservationList::validateReservation(
 
     while (current != nullptr)
     {
-
         if (current->data.getResourceID() ==
                 reservation.getResourceID() &&
             current->data.getReservationDate() ==
                 reservation.getReservationDate())
         {
-
-            cout << " Resource "
+            cout << "Resource "
                  << reservation.getResourceID()
                  << " is already reserved on "
                  << reservation.getReservationDate()
@@ -154,58 +148,45 @@ bool ReservationList::validateReservation(
     return true;
 }
 
-// insert reservation
-
+// Insert reservation
 bool ReservationList::insertReservation(
     const Reservation &reservation)
 {
-
     if (!validateReservation(reservation))
     {
         return false;
     }
 
-    ReservationNode *newNode =
-        new ReservationNode(reservation);
+    ReservationNode *newNode = new ReservationNode(reservation);
 
     if (head == nullptr)
     {
-
         head = newNode;
         tail = newNode;
     }
-
     else
     {
-
         tail->next = newNode;
         tail = newNode;
     }
 
     cout << "Reservation created successfully.\n";
-
     return true;
 }
 
-// remove/cancel reservation
-
+// Remove or cancel reservation
 bool ReservationList::removeReservation(
     const string &reservationID)
 {
-
     if (head == nullptr)
     {
-
         cout << "No active reservations.\n";
-
         return false;
     }
 
     if (head->data.getReservationID() == reservationID)
     {
-
         ReservationNode *temp = head;
-
         head = head->next;
 
         if (head == nullptr)
@@ -214,19 +195,16 @@ bool ReservationList::removeReservation(
         }
 
         delete temp;
-
         cout << "Reservation cancelled successfully.\n";
-
         return true;
     }
 
     ReservationNode *current = head;
+
     while (current->next != nullptr)
     {
-
         if (current->next->data.getReservationID() == reservationID)
         {
-
             ReservationNode *temp = current->next;
             current->next = temp->next;
 
@@ -236,9 +214,7 @@ bool ReservationList::removeReservation(
             }
 
             delete temp;
-
             cout << "Reservation cancelled successfully.\n";
-
             return true;
         }
 
@@ -246,44 +222,38 @@ bool ReservationList::removeReservation(
     }
 
     cout << "Reservation not found.\n";
-
     return false;
 }
 
-// display reservations
-
+// Display reservations
 void ReservationList::displayReservations() const
 {
-
     if (head == nullptr)
     {
-
         cout << "\nNo active reservations.\n";
-
         return;
     }
 
-    cout << "\nReservations: \n";
+    cout << "\nReservations:\n";
+
     ReservationNode *current = head;
 
     while (current != nullptr)
     {
-
         current->data.display();
-
         current = current->next;
     }
 
     cout << endl;
 }
 
-// clear
-
+// Destructor
 ReservationList::~ReservationList()
 {
     clear();
 }
 
+// Clear linked list
 void ReservationList::clear()
 {
     ReservationNode *current = head;
@@ -299,15 +269,14 @@ void ReservationList::clear()
     tail = nullptr;
 }
 
-// merge sort
-
+// Split list for merge sort
 void ReservationList::splitList(
-    ReservationNode* source,
-    ReservationNode** front,
-    ReservationNode** back)
+    ReservationNode *source,
+    ReservationNode **front,
+    ReservationNode **back)
 {
-    ReservationNode* slow = source;
-    ReservationNode* fast = source->next;
+    ReservationNode *slow = source;
+    ReservationNode *fast = source->next;
 
     while (fast != nullptr)
     {
@@ -325,10 +294,10 @@ void ReservationList::splitList(
     slow->next = nullptr;
 }
 
-// merging lists
-ReservationNode* ReservationList::merge(
-    ReservationNode* left,
-    ReservationNode* right)
+// Merge two sorted lists by reservation date
+ReservationNode *ReservationList::merge(
+    ReservationNode *left,
+    ReservationNode *right)
 {
     if (left == nullptr)
         return right;
@@ -342,8 +311,10 @@ ReservationNode* ReservationList::merge(
     string leftDate = left->data.getReservationDate();
     string rightDate = right->data.getReservationDate();
 
-    if (sscanf(leftDate.c_str(), "%d/%d/%d", &leftMonth, &leftDay, &leftYear) != 3 ||
-        sscanf(rightDate.c_str(), "%d/%d/%d", &rightMonth, &rightDay, &rightYear) != 3)
+    if (sscanf(leftDate.c_str(), "%d/%d/%d",
+               &leftMonth, &leftDay, &leftYear) != 3 ||
+        sscanf(rightDate.c_str(), "%d/%d/%d",
+               &rightMonth, &rightDay, &rightYear) != 3)
     {
         return left;
     }
@@ -366,14 +337,14 @@ ReservationNode* ReservationList::merge(
     }
 }
 
-
-ReservationNode* ReservationList::mergeSort(ReservationNode* node)
+// Merge sort
+ReservationNode *ReservationList::mergeSort(ReservationNode *node)
 {
     if (node == nullptr || node->next == nullptr)
         return node;
 
-    ReservationNode* front;
-    ReservationNode* back;
+    ReservationNode *front;
+    ReservationNode *back;
 
     splitList(node, &front, &back);
 
@@ -383,7 +354,7 @@ ReservationNode* ReservationList::mergeSort(ReservationNode* node)
     return merge(front, back);
 }
 
-
+// Sort reservations by date
 void ReservationList::sortReservationsByDate()
 {
     if (head == nullptr || head->next == nullptr)
@@ -394,8 +365,57 @@ void ReservationList::sortReservationsByDate()
 
     head = mergeSort(head);
     tail = head;
+
     while (tail->next != nullptr)
+    {
         tail = tail->next;
+    }
 
     cout << "Reservations sorted by date.\n";
+}
+
+// Search by reservation ID
+void ReservationList::searchByReservationID(
+    const string &reservationID) const
+{
+    ReservationNode *current = head;
+
+    while (current != nullptr)
+    {
+        if (current->data.getReservationID() == reservationID)
+        {
+            cout << "\nReservation found:\n";
+            current->data.display();
+            return;
+        }
+
+        current = current->next;
+    }
+
+    cout << "Reservation not found.\n";
+}
+
+// Search by student ID
+void ReservationList::searchByStudentID(
+    const string &studentID) const
+{
+    ReservationNode *current = head;
+    bool found = false;
+
+    while (current != nullptr)
+    {
+        if (current->data.getStudentID() == studentID)
+        {
+            cout << "\nReservation found:\n";
+            current->data.display();
+            found = true;
+        }
+
+        current = current->next;
+    }
+
+    if (!found)
+    {
+        cout << "No reservations found for this student.\n";
+    }
 }
