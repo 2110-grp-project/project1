@@ -9,40 +9,27 @@ using namespace std;
 
 
 static int reservationcount (const ReservationList& list, const string& resourceID){
-	stringstream buffer;
-	streambuf* old= cout.rdbuf(buffer.rdbuf());
-	list.displayReservations();
-	cout.rdbuf(old);
 	int count=0;
-	string line;
-	string tag="Resource id: ";
-	while (getline(buffer, line)){
-		if(line.compare(0, tag.size(), tag)==0){
-			if (resourceID==""|| line.substr(tag.size())==resourceID){
-				count++;
-			}
-		}
-	}
+   	const ReservationNode* cur=list.getHead();
+   	while (cur!=nullptr){
+   		if (resourceID=="" || cur->data.getResourceID()==resourceID){
+   			count++;
+   		}
+   		cur=cur->next;
+   	}
 
 	return count;
 }
 
 static int waitingcount (const WaitingList& waiting, const string& resourceID){
-	stringstream buffer;
-	streambuf* old=cout.rdbuf(buffer.rdbuf());
-	const_cast<WaitingList&>(waiting).displayWaitingList();
-	cout.rdbuf(old);
-	int count=0;
-	string line;
-	string tag="resource id: ";
-	while (getline(buffer, line)){
-		size_t pos=line.find(tag);
-		if (pos!=string::npos){
-			if(resourceID==""||line.substr(pos+tag.size())==resourceID){
-				count++;
-			}
-		}
-	}
+	queue<WaitingStudent> copy=waiting.getQueue();
+   	int count=0;
+   	while (!copy.empty()){
+   		if (resourceID=="" || copy.front().resourceID==resourceID){
+   			count++;
+   		}
+   		copy.pop();
+   	}
 
 	return count;
 }

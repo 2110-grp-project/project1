@@ -19,6 +19,10 @@ public:
     void removeStudent();
     void displayWaitingList();
     bool isEmpty();
+    queue<WaitingStudent> getQueue() const{
+	return waitingQueue;
+    }
+
 };
 
 #endif

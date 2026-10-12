@@ -56,6 +56,10 @@ public:
 
     // display
     void displayReservations() const;
+    const ReservationNode* getHead() const{
+
+	return head;
+     }
 
     // clear linked list
     void clear();
