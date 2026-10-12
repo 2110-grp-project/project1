@@ -2,7 +2,7 @@
 
 
 ## project overview 
-peoject-1 is a c++ program that is made to help students view, search, sort, reserve, and cancel campus resources such as study rooms, laptop, calculator, lab equipment, and tutoring appointment. 
+peoject-1 is a c++ program that is made to help students view, search, sort, reserve, cancel and generate system report of campus resources such as study rooms, laptop, calculator, lab equipment, and tutoring appointment. 
 
 ##features 
 - view all the available resources on campus
@@ -12,15 +12,18 @@ peoject-1 is a c++ program that is made to help students view, search, sort, res
 - Validates reservation availability 
 - Waiting list support for fully booked resources
 - Undo the most recently cancelled reservation
+- allows user to create system report
 
 ## Files
 main.cpp
 Resource.h
 Reservation.h
 WaitingList.h
+Reports.h
 CancellationHistory.h
 Reservation.cpp
 WaitingList.cpp
+Reports.cpp
 CancellationHistory.cpp
 Resource.cpp
 reservations.txt
