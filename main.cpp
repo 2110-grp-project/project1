@@ -1,4 +1,4 @@
-```cpp
+
 // this is main.cpp file
 // entry point for campus reservation system
 
@@ -244,4 +244,3 @@ int main()
 
     return 0;
 }
-```
